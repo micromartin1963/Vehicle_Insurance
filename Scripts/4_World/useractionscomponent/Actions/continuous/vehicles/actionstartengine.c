@@ -15,6 +15,7 @@
 	bool m_SparkCon		= false; //! DEPRECATED
 	bool m_BeltCon		= false; //! DEPRECATED
 	bool m_FuelCon		= false; //! DEPRECATED
+	bool m_HasBeenStarted = false;
 	
 	void ActionStartEngine()
 	{
@@ -57,26 +58,49 @@
 						if (Class.CastTo(car, trans))
 						{
 
-							if(player)
+							if(player && !m_HasBeenStarted)
 							{
+
+								//ObjectGetDisplayName();
 									ItemBase myitem = player.GetItemInHands();
+									Object obj,carobj;
+									Class.CastTo(obj,myitem);
+									Class.CastTo(car,trans);							
+									Class.CastTo(carobj,car);
+									//ItemBase myitem = player.GetItemInHands();
 									Print("xxxxxxxxxxxx you started the car");
-									if(item)
+									if(myitem)
 									{
-									Print(myitem.ToString());		
+									//Print(myitem.ToString());
+									//int i = carobj.GetID();
+									//Print(    carobj.GetID().ToString()  );	
+									string s = "";
+									string s2 = "";
+									string s3 = "";
+
+									GetGame().ObjectGetDisplayName(obj,s);
+									Print(  s   );	
+									GetGame().ObjectGetDisplayName(carobj,s2);
+									Print(  s2   );	
+
+									ItemBase paper_Item;
+									//paper_Item = ItemBase.Cast("Paper");
+
+									Param1<string> text = new Param1<string>( "hello kitty" );
+									//Param1<string> text = "hello kitty";
+									paper_Item.RPCSingleParam(ERPCs.RPC_WRITE_NOTE, text, true,player.GetIdentity());
+//player.CreateInInventory("Paper");
+									m_HasBeenStarted = true;	
 									}
 									else
 									{
 									Print("xxxxxxxyou started the car with nothing in your hands");
 									}					
 							}
-							else
-							{
-							Print("xxxxxxxyou started the car but player was not recognised");
-							}
-		                  			
+
+						return true;		                  			
 						}
-						return true;
+
 					}
 				}
 			}
@@ -84,6 +108,9 @@
 
 		return false;
 	}
+
+
+
 
 
 
@@ -98,7 +125,11 @@
 			if (trans)
 			{
 				CarScript car;
-				car.EngineStart();
+				if (Class.CastTo(car, trans))
+				{
+					car.EngineStart();
+				}
+
 	
 			}
 		}
